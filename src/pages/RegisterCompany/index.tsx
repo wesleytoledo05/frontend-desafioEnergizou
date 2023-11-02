@@ -5,6 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Button, Stack, TextField, ThemeProvider, createTheme } from '@mui/material';
 import api from '../../services/api';
 import "./styles.css"
+import { error } from 'console';
 
 const theme = createTheme({
     palette: {
@@ -17,15 +18,15 @@ const theme = createTheme({
     },
 });
 interface IClient {
-    nameClient?: string;
-    email?: string;
-    password?: string;
-    companyname?: string;
-    cnpj?: number
-    cep?: number;
-    address?: string;
-    number?: number;
-    phone?: number;
+    nameClient: string;
+    email: string;
+    password: string;
+    companyname: string;
+    cnpj: string
+    cep: string;
+    address: string;
+    number: string;
+    phone: string;
 }
 
 
@@ -37,11 +38,11 @@ const RegistrationForm: React.FC = () => {
         email: '',
         password: '',
         companyname: '',
-        cnpj: 0,
-        cep: 0,
+        cnpj: '',
+        cep: '',
         address: '',
-        number: 0,
-        phone: 0
+        number: '',
+        phone: ''
 
     })
 
@@ -55,10 +56,20 @@ const RegistrationForm: React.FC = () => {
     async function onSubmit(e: ChangeEvent<HTMLFormElement>) {
         e.preventDefault()
 
-        console.log(model)
-
         const response = await api.post("/createcompany", model)
         window.location.href = "/"
+    }
+
+
+    const checkCep = (e: { target: { value: string; }; }) => {
+        const cep = e.target.value.replace(/\D/g, '')
+        fetch(`https://viacep.com.br/ws/${cep}/json/`)
+            .then(res => res.json()).then(data => {
+                setModel({
+                    ...model,
+                    address: data.logradouro
+                })
+            }).catch(error => console.error(error))
     }
 
 
@@ -94,7 +105,7 @@ const RegistrationForm: React.FC = () => {
                         </div>
                         <div className='inputs'>
                             <TextField
-                                type="text"
+                                type="password"
                                 name='password'
                                 variant='outlined'
                                 color='secondary'
@@ -118,7 +129,7 @@ const RegistrationForm: React.FC = () => {
                         </div>
                         <div className='inputs'>
                             <TextField
-                                type="number"
+                                type="text"
                                 name='cnpj'
                                 variant='outlined'
                                 color='secondary'
@@ -130,11 +141,12 @@ const RegistrationForm: React.FC = () => {
                         </div>
                         <div className='inputs'>
                             <TextField
-                                type="number"
+                                type="text"
                                 name='cep'
                                 variant='outlined'
                                 color='secondary'
                                 label="CEP"
+                                onBlur={checkCep}
                                 required
                                 fullWidth
                                 onChange={(e: ChangeEvent<HTMLInputElement>) => updatedModel(e)}
@@ -147,12 +159,13 @@ const RegistrationForm: React.FC = () => {
                                 variant='outlined'
                                 color='secondary'
                                 label="Endereço"
+                                value={model.address}
                                 fullWidth
                                 disabled
                                 onChange={(e: ChangeEvent<HTMLInputElement>) => updatedModel(e)}
                             />
                             <TextField
-                                type="number"
+                                type="text"
                                 name='number'
                                 variant='outlined'
                                 color='secondary'
@@ -165,7 +178,7 @@ const RegistrationForm: React.FC = () => {
                         </Stack>
                         <div className='inputs'>
                             <TextField
-                                type="number"
+                                type="text"
                                 name='phone'
                                 variant='outlined'
                                 color='secondary'

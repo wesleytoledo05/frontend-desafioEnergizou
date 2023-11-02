@@ -1,5 +1,7 @@
+/* eslint-disable eqeqeq */
+/* eslint-disable no-sequences */
 /* eslint-disable jsx-a11y/anchor-has-content */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, ChangeEvent } from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -7,7 +9,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { Button, ButtonGroup, ThemeProvider, createTheme, } from '@mui/material';
+import { Button, ButtonGroup, TextField, ThemeProvider, createTheme, } from '@mui/material';
 
 import SearchSharpIcon from '@mui/icons-material/SearchSharp';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
@@ -17,6 +19,7 @@ import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import "./styles.css"
 import api from "../../services/api"
 import { useNavigate } from 'react-router-dom';
+import CustomDialog from '../../components/CustomDialog';
 
 
 interface IClient {
@@ -25,11 +28,11 @@ interface IClient {
     email: string;
     password: string;
     companyname: string;
-    cnpj: number;
-    cep: number;
+    cnpj: string;
+    cep: string;
     address: string;
-    number: number;
-    phone: number;
+    number: string;
+    phone: string;
 }
 
 const theme = createTheme({
@@ -44,13 +47,28 @@ const theme = createTheme({
 });
 
 const Home: React.FC = () => {
-
+    const [open, setOpen] = React.useState(false);
+    const [id, setId] = React.useState("");
+    const [cnpj, setCnpj] = React.useState("");
     const [clients, setClients] = useState<IClient[]>([])
     const navigate = useNavigate()
-
     useEffect(() => {
         loadClient()
     }, [])
+
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
+    const filter = () => {
+        setClients(clients
+            .filter(client => client.cnpj == cnpj)
+            .map(client => client))
+    }
 
     async function loadClient() {
         const response = await api.get("/listcompanies")
@@ -69,16 +87,39 @@ const Home: React.FC = () => {
         navigate(`/detail/${id}`, { replace: true })
     }
 
-    async function deleteClient(id: string) {
+    async function deleteClient() {
         await api.delete(`/deletecompany/${id}`)
+        handleClose()
         loadClient()
     }
 
+
     return (
+
         <div className='container '>
+            <CustomDialog
+                title="Deletar cadastro"
+                message="VOCÊ TEM CERTEZA QUE DESEJA DELETAR O CADASTRO DESSA EMPRESA?"
+                open={open}
+                handleClose={handleClose}
+                handleSubmit={deleteClient}
+            />
+
             <ThemeProvider theme={theme}>
-                {/* <h1>Sistema de Gerenciamento de Empresas!</h1> */}
-                <div className='butons'>
+                <div style={{ margin: "20px 0", alignItems: "center", display: "flex" }}>
+                    <TextField
+                        value={cnpj}
+                        onChange={(e: ChangeEvent<HTMLInputElement>) => setCnpj(e.target.value)}
+                        id="standard-basic"
+                        label="Filtrar por CNPJ"
+                        sx={{ width: "90%", padding: "8px" }}
+                    />
+                    <Button sx={{ height: "45px", color: "#003063" }}
+                        variant="outlined"
+                        startIcon={<SearchSharpIcon />}
+                        onClick={filter}
+                    >
+                    </Button>
                     <Button
                         sx={{ color: "#FFCC00" }}
                         color="primary"
@@ -87,13 +128,9 @@ const Home: React.FC = () => {
                         onClick={newClient}>
                         Cadastrar empresa
                     </Button>
-
-                    <Button sx={{ height: "45px", color: "#003063" }}
-                        variant="outlined"
-                        startIcon={<SearchSharpIcon />}>
-                    </Button>
                 </div>
-            </ThemeProvider>
+
+            </ThemeProvider >
 
             <TableContainer component={Paper}>
                 <Table sx={{ minWidth: 650, backgroundColor: "#D9D9D9" }} aria-label="simple table">
@@ -115,7 +152,7 @@ const Home: React.FC = () => {
                                     <ButtonGroup size="large" aria-label="large outlined button group">
                                         <Button onClick={() => editClient(client.id)} sx={{ color: "#000000", borderColor: "#003063", backgroundColor: "#0030633d" }} startIcon={<EditOutlinedIcon />}></Button>
                                         <Button onClick={() => viewClient(client.id)} sx={{ color: "#000000", borderColor: "#FFCC00", backgroundColor: "#ffcc003a" }} startIcon={<InfoOutlinedIcon />}></Button>
-                                        <Button onClick={() => deleteClient(client.id)} sx={{ color: "#000000", borderColor: "red", backgroundColor: "#ff000039" }} startIcon={<DeleteOutlinedIcon />}></Button>
+                                        <Button onClick={() => { handleClickOpen(); setId(client.id) }} sx={{ color: "#000000", borderColor: "red", backgroundColor: "#ff000039" }} startIcon={<DeleteOutlinedIcon />}></Button>
                                     </ButtonGroup>
 
                                 </TableCell>

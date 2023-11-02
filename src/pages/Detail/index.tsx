@@ -7,6 +7,8 @@ import api from '../../services/api';
 import { Card } from 'react-bootstrap';
 
 import "./styles.css"
+import { insertMaskInCep } from '../../functions/MaskCep';
+import { insertMaskInPhone } from '../../functions/MaskPhone';
 
 
 
@@ -26,11 +28,11 @@ interface IClient {
   email?: string;
   password?: string;
   companyname?: string;
-  cnpj?: number
-  cep?: number;
+  cnpj?: string
+  cep?: string;
   address?: string;
-  number?: number;
-  phone?: number;
+  number?: string;
+  phone?: string | undefined;
 }
 
 const Detail: React.FC = () => {
@@ -45,11 +47,11 @@ const Detail: React.FC = () => {
     email: '',
     password: '',
     companyname: '',
-    cnpj: 0,
-    cep: 0,
+    cnpj: '',
+    cep: '',
     address: '',
-    number: 0,
-    phone: 0
+    number: '',
+    phone: ''
 
   })
 
@@ -86,13 +88,13 @@ const Detail: React.FC = () => {
             <br />
             <strong>CNPJ: {model.cnpj}</strong>
             <br />
-            <strong>CEP: {model.cep}</strong>
+            <strong>CEP: {insertMaskInCep(model.cep || '')}</strong>
             <br />
             <strong>Endereço: {model.address}</strong>
             <br />
             <strong>Número: {model.number}</strong>
             <br />
-            <strong>Telefone: {model.phone}</strong>
+            <strong>Telefone: {insertMaskInPhone(model.phone || '')}</strong>
             <br />
           </Card.Text>
         </Card.Body>

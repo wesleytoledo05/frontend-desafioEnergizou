@@ -3,8 +3,7 @@ import { TextField, Stack, ThemeProvider, createTheme, Button } from '@mui/mater
 import React, { ChangeEvent, useEffect } from 'react';
 import api from '../../services/api';
 import "./styles.css"
-import { RoutesEnum } from '../../enums/PagesRoutesEnum';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 
 
 
@@ -25,11 +24,11 @@ interface IClient {
     email: string;
     password: string;
     companyname: string;
-    cnpj: number
-    cep: number;
+    cnpj: string
+    cep: string;
     address: string;
-    number: number;
-    phone: number;
+    number: string;
+    phone: string;
 }
 
 
@@ -44,11 +43,11 @@ const UpdateCompany: React.FC = () => {
         email: '',
         password: '',
         companyname: '',
-        cnpj: 0,
-        cep: 0,
+        cnpj: '',
+        cep: '',
         address: '',
-        number: 0,
-        phone: 0,
+        number: '',
+        phone: '',
 
     })
 
@@ -121,12 +120,12 @@ const UpdateCompany: React.FC = () => {
                                 fullWidth
                                 required
                                 onChange={(e: ChangeEvent<HTMLInputElement>) => updatedModel(e)}
-                                
+
                             />
                         </div>
                         <div className='inputs'>
                             <TextField
-                                type="text"
+                                type="password"
                                 name='password'
                                 value={model.password}
                                 variant='outlined'
@@ -152,7 +151,7 @@ const UpdateCompany: React.FC = () => {
                         </div>
                         <div className='inputs'>
                             <TextField
-                                type="number"
+                                type="text"
                                 name='cnpj'
                                 value={model.cnpj}
                                 variant='outlined'
@@ -165,7 +164,7 @@ const UpdateCompany: React.FC = () => {
                         </div>
                         <div className='inputs'>
                             <TextField
-                                type="number"
+                                type="text"
                                 name='cep'
                                 value={model.cep}
                                 variant='outlined'
@@ -189,7 +188,7 @@ const UpdateCompany: React.FC = () => {
                                 onChange={(e: ChangeEvent<HTMLInputElement>) => updatedModel(e)}
                             />
                             <TextField
-                                type="number"
+                                type="text"
                                 name='number'
                                 value={model.number}
                                 variant='outlined'
@@ -203,7 +202,7 @@ const UpdateCompany: React.FC = () => {
                         </Stack>
                         <div className='inputs'>
                             <TextField
-                                type="number"
+                                type="text"
                                 name='phone'
                                 value={model.phone}
                                 variant='outlined'
