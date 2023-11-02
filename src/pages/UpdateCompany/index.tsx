@@ -1,10 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { ChangeEvent, useState } from 'react';
-
-import { Link, useNavigate } from 'react-router-dom';
-import { Button, Stack, TextField, ThemeProvider, createTheme } from '@mui/material';
+import { TextField, Stack, ThemeProvider, createTheme, Button } from '@mui/material';
+import React, { ChangeEvent, useEffect } from 'react';
 import api from '../../services/api';
 import "./styles.css"
+import { RoutesEnum } from '../../enums/PagesRoutesEnum';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+
+
+
 
 const theme = createTheme({
     palette: {
@@ -17,22 +20,26 @@ const theme = createTheme({
     },
 });
 interface IClient {
-    nameClient?: string;
-    email?: string;
-    password?: string;
-    companyname?: string;
-    cnpj?: number
-    cep?: number;
-    address?: string;
-    number?: number;
-    phone?: number;
+    id?: string | undefined;
+    nameClient: string;
+    email: string;
+    password: string;
+    companyname: string;
+    cnpj: number
+    cep: number;
+    address: string;
+    number: number;
+    phone: number;
 }
 
 
 
-const RegistrationForm: React.FC = () => {
+const UpdateCompany: React.FC = () => {
+    const { id } = useParams()
 
-    const [model, setModel] = useState<IClient>({
+
+    const [model, setModel] = React.useState<IClient>({
+        id: "",
         nameClient: '',
         email: '',
         password: '',
@@ -41,9 +48,15 @@ const RegistrationForm: React.FC = () => {
         cep: 0,
         address: '',
         number: 0,
-        phone: 0
+        phone: 0,
 
     })
+
+    useEffect(() => {
+        if (id !== undefined) {
+            findClient(id!)
+        }
+    }, [id])
 
     function updatedModel(e: ChangeEvent<HTMLInputElement>) {
         setModel({
@@ -55,23 +68,40 @@ const RegistrationForm: React.FC = () => {
     async function onSubmit(e: ChangeEvent<HTMLFormElement>) {
         e.preventDefault()
 
-        console.log(model)
-
-        const response = await api.post("/createcompany", model)
+        if (id !== undefined) {
+            const response = await api.put(`updatecompany/${id}`, model)
+        } else {
+            const response = await api.post("/createcompany ", model)
+        }
         window.location.href = "/"
     }
 
+    async function findClient(id: string) {
+        const response = await api.get(`/findcompanies/${id}`)
+        setModel({
+            nameClient: response.data.nameClient,
+            email: response.data.email,
+            password: response.data.password,
+            companyname: response.data.companyname,
+            cnpj: response.data.cnpj,
+            cep: response.data.cep,
+            address: response.data.address,
+            number: response.data.number,
+            phone: response.data.phone
+        })
+    }
 
     return (
         <React.Fragment>
             <div className='form-1'>
                 <ThemeProvider theme={theme}>
                     <form onSubmit={onSubmit} className='form-2'>
-                        <h4 style={{ textAlign: "center", marginBottom: "30px" }}>Cadastrar nova empresa</h4>
+                        <h4 style={{ textAlign: "center", marginBottom: "30px" }}>Alterar informações</h4>
                         <div className='inputs'>
                             <TextField
                                 type="text"
                                 name='nameClient'
+                                value={model.nameClient}
                                 variant='outlined'
                                 color='secondary'
                                 label="Nome do cliente"
@@ -84,18 +114,21 @@ const RegistrationForm: React.FC = () => {
                             <TextField
                                 type="email"
                                 name='email'
+                                value={model.email}
                                 variant='outlined'
                                 color='secondary'
                                 label="Email"
                                 fullWidth
                                 required
                                 onChange={(e: ChangeEvent<HTMLInputElement>) => updatedModel(e)}
+                                
                             />
                         </div>
                         <div className='inputs'>
                             <TextField
                                 type="text"
                                 name='password'
+                                value={model.password}
                                 variant='outlined'
                                 color='secondary'
                                 label="Senha"
@@ -108,6 +141,7 @@ const RegistrationForm: React.FC = () => {
                             <TextField
                                 type="text"
                                 name='companyname'
+                                value={model.companyname}
                                 variant='outlined'
                                 color='secondary'
                                 label="Nome da empresa (Razão Social)"
@@ -120,6 +154,7 @@ const RegistrationForm: React.FC = () => {
                             <TextField
                                 type="number"
                                 name='cnpj'
+                                value={model.cnpj}
                                 variant='outlined'
                                 color='secondary'
                                 label="CNPJ"
@@ -132,6 +167,7 @@ const RegistrationForm: React.FC = () => {
                             <TextField
                                 type="number"
                                 name='cep'
+                                value={model.cep}
                                 variant='outlined'
                                 color='secondary'
                                 label="CEP"
@@ -144,6 +180,7 @@ const RegistrationForm: React.FC = () => {
                             <TextField
                                 type="text"
                                 name='address'
+                                value={model.address}
                                 variant='outlined'
                                 color='secondary'
                                 label="Endereço"
@@ -154,6 +191,7 @@ const RegistrationForm: React.FC = () => {
                             <TextField
                                 type="number"
                                 name='number'
+                                value={model.number}
                                 variant='outlined'
                                 color='secondary'
                                 label="N°"
@@ -167,6 +205,7 @@ const RegistrationForm: React.FC = () => {
                             <TextField
                                 type="number"
                                 name='phone'
+                                value={model.phone}
                                 variant='outlined'
                                 color='secondary'
                                 label="Telefone"
@@ -176,7 +215,7 @@ const RegistrationForm: React.FC = () => {
                             />
                         </div>
                         <div className='butons'>
-                            <Button sx={{ marginRight: "15px", color: "#FFCC00" }} variant="contained" color="primary" type="submit">Cadastrar</Button>
+                            <Button sx={{ marginRight: "15px", color: "#FFCC00" }} variant="contained" color="primary" type="submit">Alterar</Button>
                             <Link to="/"><Button variant="outlined" color="primary">Fechar</Button></Link>
                         </div>
                     </form>
@@ -187,4 +226,5 @@ const RegistrationForm: React.FC = () => {
     )
 }
 
-export default RegistrationForm;
+
+export default UpdateCompany;

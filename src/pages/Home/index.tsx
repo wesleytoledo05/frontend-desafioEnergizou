@@ -15,8 +15,6 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 
 import "./styles.css"
-import { RoutesEnum } from '../../enums/PagesRoutesEnum';
-import { Link } from 'react-router-dom';
 import api from "../../services/api"
 import { useNavigate } from 'react-router-dom';
 
@@ -56,12 +54,24 @@ const Home: React.FC = () => {
 
     async function loadClient() {
         const response = await api.get("/listcompanies")
-        console.log(response)
         setClients(response.data)
     }
 
     function newClient() {
-        navigate("/registercompany")
+        navigate("/registercompany", { replace: true })
+    }
+
+    function editClient(id: string) {
+        navigate(`/updatecompany/${id}`, { replace: true })
+    }
+
+    function viewClient(id: string) {
+        navigate(`/detail/${id}`, { replace: true })
+    }
+
+    async function deleteClient(id: string) {
+        await api.delete(`/deletecompany/${id}`)
+        loadClient()
     }
 
     return (
@@ -69,15 +79,14 @@ const Home: React.FC = () => {
             <ThemeProvider theme={theme}>
                 {/* <h1>Sistema de Gerenciamento de Empresas!</h1> */}
                 <div className='butons'>
-                    <Link to={RoutesEnum.REGISTERCOMPANY}>
-                        <Button
-                            sx={{ color: "#FFCC00" }}
-                            color="primary"
-                            id='registerCompany'
-                            variant="contained">
-                            Cadastrar empresa
-                        </Button>
-                    </Link>
+                    <Button
+                        sx={{ color: "#FFCC00" }}
+                        color="primary"
+                        id='registerCompany'
+                        variant="contained"
+                        onClick={newClient}>
+                        Cadastrar empresa
+                    </Button>
 
                     <Button sx={{ height: "45px", color: "#003063" }}
                         variant="outlined"
@@ -104,9 +113,9 @@ const Home: React.FC = () => {
                                 <TableCell align="left">{client.cnpj}</TableCell>
                                 <TableCell align="center">
                                     <ButtonGroup size="large" aria-label="large outlined button group">
-                                        <Link to={RoutesEnum.CHANGEINFORMATION}><Button sx={{ color: "#000000", borderColor: "#003063", backgroundColor: "#0030633d" }} startIcon={<EditOutlinedIcon />}></Button></Link>
-                                        <Link to={RoutesEnum.INFORMATIONS}><Button sx={{ color: "#000000", borderColor: "#FFCC00", backgroundColor: "#ffcc003a" }} startIcon={<InfoOutlinedIcon />}></Button></Link>
-                                        <Button sx={{ color: "#000000", borderColor: "red", backgroundColor: "#ff000039" }} startIcon={<DeleteOutlinedIcon />}></Button>
+                                        <Button onClick={() => editClient(client.id)} sx={{ color: "#000000", borderColor: "#003063", backgroundColor: "#0030633d" }} startIcon={<EditOutlinedIcon />}></Button>
+                                        <Button onClick={() => viewClient(client.id)} sx={{ color: "#000000", borderColor: "#FFCC00", backgroundColor: "#ffcc003a" }} startIcon={<InfoOutlinedIcon />}></Button>
+                                        <Button onClick={() => deleteClient(client.id)} sx={{ color: "#000000", borderColor: "red", backgroundColor: "#ff000039" }} startIcon={<DeleteOutlinedIcon />}></Button>
                                     </ButtonGroup>
 
                                 </TableCell>

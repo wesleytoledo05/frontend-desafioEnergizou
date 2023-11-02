@@ -3,17 +3,16 @@ import { Routes, Route } from "react-router-dom";
 
 import Home from "./pages/Home"
 import RegisterCompany from "./pages/RegisterCompany"
-import Informations from "./pages/Informations";
-import ChangeInformations from "./pages/ChangeInformations";
-import { RoutesEnum } from "./enums/PagesRoutesEnum";
+import Detail from "./pages/Detail";
+import UpdateCompany from "./pages/UpdateCompany";
 
 
 const MainRoutes = () => (
     <Routes>
-        <Route path={RoutesEnum.HOME} element={<Home />} />
-        <Route path={RoutesEnum.REGISTERCOMPANY} element={<RegisterCompany />} />
-        <Route path={RoutesEnum.INFORMATIONS} element={<Informations />} />
-        <Route path={RoutesEnum.CHANGEINFORMATION} element={<ChangeInformations />} />
+        <Route path="/" element={<Home />} />
+        <Route path="/registercompany" element={<RegisterCompany />} />
+        <Route path="/detail/:id" element={<Detail />} />
+        <Route path="/updatecompany/:id" element={<UpdateCompany />} />
     </Routes>
 )
 
