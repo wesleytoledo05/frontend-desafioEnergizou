@@ -7,8 +7,7 @@ import api from '../../services/api';
 import { Card } from 'react-bootstrap';
 
 import "./styles.css"
-import { insertMaskInCep } from '../../functions/MaskCep';
-import { insertMaskInPhone } from '../../functions/MaskPhone';
+import { insertMaskInCep, insertMaskInCnpj, insertMaskInPhone } from '../../functions/Masks';
 
 
 
@@ -86,7 +85,7 @@ const Detail: React.FC = () => {
             <br />
             <strong>Nome da empresa: {model.companyname}</strong>
             <br />
-            <strong>CNPJ: {model.cnpj}</strong>
+            <strong>CNPJ: {insertMaskInCnpj(model.cnpj || '')}</strong>
             <br />
             <strong>CEP: {insertMaskInCep(model.cep || '')}</strong>
             <br />

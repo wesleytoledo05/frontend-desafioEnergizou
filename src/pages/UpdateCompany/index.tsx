@@ -4,6 +4,7 @@ import React, { ChangeEvent, useEffect } from 'react';
 import api from '../../services/api';
 import "./styles.css"
 import { Link, useParams } from 'react-router-dom';
+import { insertMaskInCep, insertMaskInCnpj, insertMaskInPhone, removeMask } from '../../functions/Masks';
 
 
 
@@ -64,13 +65,25 @@ const UpdateCompany: React.FC = () => {
         })
     }
 
+
+    function normalizeModel(model: IClient): IClient {
+        return {
+            ...model,
+            cnpj: removeMask(model.cnpj),
+            cep: removeMask(model.cep),
+            phone: removeMask(model.phone)
+        }
+    }
+
     async function onSubmit(e: ChangeEvent<HTMLFormElement>) {
         e.preventDefault()
 
+        const normalizedPayload = normalizeModel(model);
+
         if (id !== undefined) {
-            const response = await api.put(`updatecompany/${id}`, model)
+            await api.put(`updatecompany/${id}`, normalizedPayload)
         } else {
-            const response = await api.post("/createcompany ", model)
+            await api.post("/createcompany ", normalizedPayload)
         }
         window.location.href = "/"
     }
@@ -153,7 +166,7 @@ const UpdateCompany: React.FC = () => {
                             <TextField
                                 type="text"
                                 name='cnpj'
-                                value={model.cnpj}
+                                value={insertMaskInCnpj(model.cnpj)}
                                 variant='outlined'
                                 color='secondary'
                                 label="CNPJ"
@@ -166,7 +179,7 @@ const UpdateCompany: React.FC = () => {
                             <TextField
                                 type="text"
                                 name='cep'
-                                value={model.cep}
+                                value={insertMaskInCep(model.cep)}
                                 variant='outlined'
                                 color='secondary'
                                 label="CEP"
@@ -188,7 +201,7 @@ const UpdateCompany: React.FC = () => {
                                 onChange={(e: ChangeEvent<HTMLInputElement>) => updatedModel(e)}
                             />
                             <TextField
-                                type="text"
+                                type="number"
                                 name='number'
                                 value={model.number}
                                 variant='outlined'
@@ -204,7 +217,7 @@ const UpdateCompany: React.FC = () => {
                             <TextField
                                 type="text"
                                 name='phone'
-                                value={model.phone}
+                                value={insertMaskInPhone(model.phone)}
                                 variant='outlined'
                                 color='secondary'
                                 label="Telefone"

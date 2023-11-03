@@ -1,7 +1,7 @@
 /* eslint-disable eqeqeq */
 /* eslint-disable no-sequences */
 /* eslint-disable jsx-a11y/anchor-has-content */
-import React, { useState, useEffect, ChangeEvent } from 'react';
+import React, { useState, useEffect } from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -11,7 +11,6 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { Button, ButtonGroup, TextField, ThemeProvider, createTheme, } from '@mui/material';
 
-import SearchSharpIcon from '@mui/icons-material/SearchSharp';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
@@ -20,6 +19,7 @@ import "./styles.css"
 import api from "../../services/api"
 import { useNavigate } from 'react-router-dom';
 import CustomDialog from '../../components/CustomDialog';
+import { insertMaskInCnpj } from '../../functions/Masks';
 
 
 interface IClient {
@@ -49,8 +49,9 @@ const theme = createTheme({
 const Home: React.FC = () => {
     const [open, setOpen] = React.useState(false);
     const [id, setId] = React.useState("");
-    const [cnpj, setCnpj] = React.useState("");
     const [clients, setClients] = useState<IClient[]>([])
+    const [filter, setFilter] = useState('');
+
     const navigate = useNavigate()
     useEffect(() => {
         loadClient()
@@ -64,11 +65,9 @@ const Home: React.FC = () => {
         setOpen(false);
     };
 
-    const filter = () => {
-        setClients(clients
-            .filter(client => client.cnpj == cnpj)
-            .map(client => client))
-    }
+    const filteredClients = clients.filter((client) =>
+        client.cnpj.toString().toLowerCase().includes(filter.toLowerCase())
+    );
 
     async function loadClient() {
         const response = await api.get("/listcompanies")
@@ -108,18 +107,12 @@ const Home: React.FC = () => {
             <ThemeProvider theme={theme}>
                 <div style={{ margin: "20px 0", alignItems: "center", display: "flex" }}>
                     <TextField
-                        value={cnpj}
-                        onChange={(e: ChangeEvent<HTMLInputElement>) => setCnpj(e.target.value)}
+                        value={filter}
+                        onChange={(e) => setFilter(e.target.value)}
                         id="standard-basic"
                         label="Filtrar por CNPJ"
                         sx={{ width: "90%", padding: "8px" }}
                     />
-                    <Button sx={{ height: "45px", color: "#003063" }}
-                        variant="outlined"
-                        startIcon={<SearchSharpIcon />}
-                        onClick={filter}
-                    >
-                    </Button>
                     <Button
                         sx={{ color: "#FFCC00" }}
                         color="primary"
@@ -143,11 +136,11 @@ const Home: React.FC = () => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {clients.map(client => (
+                        {filteredClients.map(client => (
                             <TableRow key={client.id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                                 <TableCell component="th" scope="row">{client.nameClient}</TableCell>
                                 <TableCell align="left">{client.companyname}</TableCell>
-                                <TableCell align="left">{client.cnpj}</TableCell>
+                                <TableCell align="left">{insertMaskInCnpj(client.cnpj)}</TableCell>
                                 <TableCell align="center">
                                     <ButtonGroup size="large" aria-label="large outlined button group">
                                         <Button onClick={() => editClient(client.id)} sx={{ color: "#000000", borderColor: "#003063", backgroundColor: "#0030633d" }} startIcon={<EditOutlinedIcon />}></Button>

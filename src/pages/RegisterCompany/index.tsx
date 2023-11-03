@@ -7,6 +7,10 @@ import api from '../../services/api';
 import "./styles.css"
 import { error } from 'console';
 
+import * as yup from "yup"
+import { insertMaskInCep, insertMaskInCnpj, insertMaskInPhone, removeMask } from '../../functions/Masks';
+
+
 const theme = createTheme({
     palette: {
         primary: {
@@ -28,8 +32,6 @@ interface IClient {
     number: string;
     phone: string;
 }
-
-
 
 const RegistrationForm: React.FC = () => {
 
@@ -53,13 +55,23 @@ const RegistrationForm: React.FC = () => {
         })
     }
 
-    async function onSubmit(e: ChangeEvent<HTMLFormElement>) {
-        e.preventDefault()
-
-        const response = await api.post("/createcompany", model)
-        window.location.href = "/"
+    function normalizeModel(model: IClient): IClient {
+        return {
+            ...model,
+            cnpj: removeMask(model.cnpj),
+            cep: removeMask(model.cep),
+            phone: removeMask(model.phone)
+        }
     }
 
+    async function onSubmit(e: ChangeEvent<HTMLFormElement>) {
+        e.preventDefault()
+        const normalizedPayload = normalizeModel(model);
+
+
+        await api.post("/createcompany", normalizedPayload)
+        window.location.href = "/"
+    }
 
     const checkCep = (e: { target: { value: string; }; }) => {
         const cep = e.target.value.replace(/\D/g, '')
@@ -71,7 +83,6 @@ const RegistrationForm: React.FC = () => {
                 })
             }).catch(error => console.error(error))
     }
-
 
     return (
         <React.Fragment>
@@ -87,7 +98,6 @@ const RegistrationForm: React.FC = () => {
                                 color='secondary'
                                 label="Nome do cliente"
                                 fullWidth
-                                required
                                 onChange={(e: ChangeEvent<HTMLInputElement>) => updatedModel(e)}
                             />
                         </div>
@@ -131,6 +141,7 @@ const RegistrationForm: React.FC = () => {
                             <TextField
                                 type="text"
                                 name='cnpj'
+                                value={insertMaskInCnpj(model.cnpj)}
                                 variant='outlined'
                                 color='secondary'
                                 label="CNPJ"
@@ -143,6 +154,7 @@ const RegistrationForm: React.FC = () => {
                             <TextField
                                 type="text"
                                 name='cep'
+                                value={insertMaskInCep(model.cep)}
                                 variant='outlined'
                                 color='secondary'
                                 label="CEP"
@@ -165,7 +177,7 @@ const RegistrationForm: React.FC = () => {
                                 onChange={(e: ChangeEvent<HTMLInputElement>) => updatedModel(e)}
                             />
                             <TextField
-                                type="text"
+                                type="number"
                                 name='number'
                                 variant='outlined'
                                 color='secondary'
@@ -180,6 +192,7 @@ const RegistrationForm: React.FC = () => {
                             <TextField
                                 type="text"
                                 name='phone'
+                                value={insertMaskInPhone(model.phone)}
                                 variant='outlined'
                                 color='secondary'
                                 label="Telefone"
