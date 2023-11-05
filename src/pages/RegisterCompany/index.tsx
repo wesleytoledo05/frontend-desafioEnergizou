@@ -5,9 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Button, Stack, TextField, ThemeProvider, createTheme } from '@mui/material';
 import api from '../../services/api';
 import "./styles.css"
-import { error } from 'console';
 
-import * as yup from "yup"
 import { insertMaskInCep, insertMaskInCnpj, insertMaskInPhone, removeMask } from '../../functions/Masks';
 
 
@@ -209,7 +207,6 @@ const RegistrationForm: React.FC = () => {
                 </ThemeProvider>
             </div >
         </React.Fragment >
-
     )
 }
 

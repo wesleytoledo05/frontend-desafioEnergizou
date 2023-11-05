@@ -138,10 +138,10 @@ const UpdateCompany: React.FC = () => {
                         </div>
                         <div className='inputs'>
                             <TextField
-                                type="password"
+                                type="text"
                                 name='password'
                                 value={model.password}
-                                variant='outlined'
+                                variant='outlined'                                  
                                 color='secondary'
                                 label="Senha"
                                 required

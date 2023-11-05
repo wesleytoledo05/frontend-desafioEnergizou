@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable eqeqeq */
 /* eslint-disable no-sequences */
 /* eslint-disable jsx-a11y/anchor-has-content */
@@ -14,6 +15,8 @@ import { Button, ButtonGroup, TextField, ThemeProvider, createTheme, } from '@mu
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
+import SearchSharpIcon from '@mui/icons-material/SearchSharp';
+
 
 import "./styles.css"
 import api from "../../services/api"
@@ -50,13 +53,34 @@ const Home: React.FC = () => {
     const [open, setOpen] = React.useState(false);
     const [id, setId] = React.useState("");
     const [clients, setClients] = useState<IClient[]>([])
-    const [filter, setFilter] = useState('');
+    const [cnpj, setCnpj] = useState('');
+    const [, setItems] = useState([]);
+    const [filteredItems, setFilteredItems] = useState<IClient[]>([]);
 
     const navigate = useNavigate()
     useEffect(() => {
         loadClient()
     }, [])
 
+    const searchByCnpj = async () => {
+        try {
+            const response = await api.get(`/findcompaniesbycnpj/${cnpj}`);
+            const fetchedItems = response.data;
+            setItems(fetchedItems);
+            setFilteredItems(fetchedItems);
+            console.log("antes", fetchedItems);
+        } catch (error) {
+            console.error('Erro ao obter Itens da API', error);
+            console.log("depois", error);
+        }
+    };
+
+    const handleSearchClick = () => {
+        const filteredItems = clients.filter((client) =>
+            client.cnpj.toString().toLowerCase().includes(cnpj.toLowerCase())
+        );
+        setFilteredItems(filteredItems);
+    };
     const handleClickOpen = () => {
         setOpen(true);
     };
@@ -64,10 +88,6 @@ const Home: React.FC = () => {
     const handleClose = () => {
         setOpen(false);
     };
-
-    const filteredClients = clients.filter((client) =>
-        client.cnpj.toString().toLowerCase().includes(filter.toLowerCase())
-    );
 
     async function loadClient() {
         const response = await api.get("/listcompanies")
@@ -91,10 +111,7 @@ const Home: React.FC = () => {
         handleClose()
         loadClient()
     }
-
-
     return (
-
         <div className='container '>
             <CustomDialog
                 title="Deletar cadastro"
@@ -103,16 +120,30 @@ const Home: React.FC = () => {
                 handleClose={handleClose}
                 handleSubmit={deleteClient}
             />
-
             <ThemeProvider theme={theme}>
+
                 <div style={{ margin: "20px 0", alignItems: "center", display: "flex" }}>
                     <TextField
-                        value={filter}
-                        onChange={(e) => setFilter(e.target.value)}
+                        value={cnpj}
+                        onChange={(e) => setCnpj(e.target.value)}
                         id="standard-basic"
                         label="Filtrar por CNPJ"
                         sx={{ width: "90%", padding: "8px" }}
                     />
+                    <Button
+                        sx={{ color: "#FFCC00", width: "20px" }}
+                        color="primary"
+                        id='registerCompany'
+                        variant="contained"
+                        onClick={() => {
+                            handleSearchClick();
+                        }}
+                        startIcon={<SearchSharpIcon />}
+                    >
+                    </Button>
+                </div>
+
+                <div style={{ margin: "20px 0", textAlign: "right" }}>
                     <Button
                         sx={{ color: "#FFCC00" }}
                         color="primary"
@@ -122,9 +153,7 @@ const Home: React.FC = () => {
                         Cadastrar empresa
                     </Button>
                 </div>
-
             </ThemeProvider >
-
             <TableContainer component={Paper}>
                 <Table sx={{ minWidth: 650, backgroundColor: "#D9D9D9" }} aria-label="simple table">
                     <TableHead >
@@ -136,21 +165,37 @@ const Home: React.FC = () => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {filteredClients.map(client => (
-                            <TableRow key={client.id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                                <TableCell component="th" scope="row">{client.nameClient}</TableCell>
-                                <TableCell align="left">{client.companyname}</TableCell>
-                                <TableCell align="left">{insertMaskInCnpj(client.cnpj)}</TableCell>
-                                <TableCell align="center">
-                                    <ButtonGroup size="large" aria-label="large outlined button group">
-                                        <Button onClick={() => editClient(client.id)} sx={{ color: "#000000", borderColor: "#003063", backgroundColor: "#0030633d" }} startIcon={<EditOutlinedIcon />}></Button>
-                                        <Button onClick={() => viewClient(client.id)} sx={{ color: "#000000", borderColor: "#FFCC00", backgroundColor: "#ffcc003a" }} startIcon={<InfoOutlinedIcon />}></Button>
-                                        <Button onClick={() => { handleClickOpen(); setId(client.id) }} sx={{ color: "#000000", borderColor: "red", backgroundColor: "#ff000039" }} startIcon={<DeleteOutlinedIcon />}></Button>
-                                    </ButtonGroup>
-
-                                </TableCell>
-                            </TableRow>
-                        ))}
+                        {cnpj === '' ? (
+                            clients.map(client => (
+                                <TableRow key={client.id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                                    <TableCell component="th" scope="row">{client.nameClient}</TableCell>
+                                    <TableCell align="left">{client.companyname}</TableCell>
+                                    <TableCell align="left">{insertMaskInCnpj(client.cnpj)}</TableCell>
+                                    <TableCell align="center">
+                                        <ButtonGroup size="large" aria-label="large outlined button group">
+                                            <Button onClick={() => editClient(client.id)} sx={{ color: "#000000", borderColor: "#003063", backgroundColor: "#0030633d" }} startIcon={<EditOutlinedIcon />}></Button>
+                                            <Button onClick={() => viewClient(client.id)} sx={{ color: "#000000", borderColor: "#FFCC00", backgroundColor: "#ffcc003a" }} startIcon={<InfoOutlinedIcon />}></Button>
+                                            <Button onClick={() => { handleClickOpen(); setId(client.id) }} sx={{ color: "#000000", borderColor: "red", backgroundColor: "#ff000039" }} startIcon={<DeleteOutlinedIcon />}></Button>
+                                        </ButtonGroup>
+                                    </TableCell>
+                                </TableRow>
+                            ))
+                        ) : (
+                            filteredItems.map(client => (
+                                <TableRow key={client.id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                                    <TableCell component="th" scope="row">{client.nameClient}</TableCell>
+                                    <TableCell align="left">{client.companyname}</TableCell>
+                                    <TableCell align="left">{insertMaskInCnpj(client.cnpj)}</TableCell>
+                                    <TableCell align="center">
+                                        <ButtonGroup size="large" aria-label="large outlined button group">
+                                            <Button onClick={() => editClient(client.id)} sx={{ color: "#000000", borderColor: "#003063", backgroundColor: "#0030633d" }} startIcon={<EditOutlinedIcon />}></Button>
+                                            <Button onClick={() => viewClient(client.id)} sx={{ color: "#000000", borderColor: "#FFCC00", backgroundColor: "#ffcc003a" }} startIcon={<InfoOutlinedIcon />}></Button>
+                                            <Button onClick={() => { handleClickOpen(); setId(client.id) }} sx={{ color: "#000000", borderColor: "red", backgroundColor: "#ff000039" }} startIcon={<DeleteOutlinedIcon />}></Button>
+                                        </ButtonGroup>
+                                    </TableCell>
+                                </TableRow>
+                            ))
+                        )}
                     </TableBody>
                 </Table>
             </TableContainer>

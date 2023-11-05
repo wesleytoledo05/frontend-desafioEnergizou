@@ -1,8 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { TextField, ThemeProvider, createTheme, Stack, Button, ListItem, ListItemIcon, ListItemText, List } from '@mui/material';
+import { createTheme, Button } from '@mui/material';
 import { Link, useParams } from 'react-router-dom';
-import React, { ChangeEvent, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import api from '../../services/api';
 import { Card } from 'react-bootstrap';
 
@@ -10,28 +10,16 @@ import "./styles.css"
 import { insertMaskInCep, insertMaskInCnpj, insertMaskInPhone } from '../../functions/Masks';
 
 
-
-
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: '#003063'
-    },
-    secondary: {
-      main: '#003063',
-    },
-  },
-});
 interface IClient {
-  nameClient?: string;
-  email?: string;
-  password?: string;
-  companyname?: string;
-  cnpj?: string
-  cep?: string;
-  address?: string;
-  number?: string;
-  phone?: string | undefined;
+  nameClient: string;
+  email: string;
+  password: string;
+  companyname: string;
+  cnpj: string
+  cep: string;
+  address: string;
+  number: string;
+  phone: string;
 }
 
 const Detail: React.FC = () => {
@@ -54,19 +42,12 @@ const Detail: React.FC = () => {
 
   })
 
-  function updatedModel(e: ChangeEvent<HTMLInputElement>) {
-    setModel({
-      ...model,
-      [e.target.name]: e.target.value
-    })
-  }
-
   async function findClient() {
     const response = await api.get<IClient>(`/findcompanies/${id}`)
-    console.log(response)
     setModel(response.data)
 
   }
+
   return (
     <div className="container">
       <br />
