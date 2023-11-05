@@ -43,12 +43,15 @@ $ npm install
 
 1 - Siga as instruções no [Backend-desafioEnergizou](https://github.com/wesleytoledo05/backend-desafioEnergizou) para ter o servidor instalado e funcionando em sua máquina.
 
-2 - Com o servidor instalado e funcionando, inicie o front end com o comando:
+2 - Com o servidor instalado e funcionando, inicie o frontEnd com o comando:
 
 ```
 $ npm start
 ```
 
+## Construido com: 
 
-
-
+- [React Js](https://react.dev/) Aplicativo criado com reactJs.
+- [React Router Dom](https://www.npmjs.com/package/react-router-dom) Rotas
+- [Axios](https://github.com/axios/axios) HTTP Client
+- [Material UI](https://v4.mui.com/) Estilização
