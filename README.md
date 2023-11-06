@@ -32,6 +32,9 @@ Além disso, você precisará do servidor em execução localmente em sua máqui
 ```
 $ git clone https://github.com/wesleytoledo05/frontend-desafioEnergizou
 ```
+```
+$ cd frontend-desafioEnergizou
+```
 
 **Instalando dependências**
 
@@ -53,11 +56,8 @@ Agora com o projeto rodando acesse "http://localhost:3000/" no seu computador pa
 
 ## Construido com: 
 
-<<<<<<< HEAD
 - [React Js](https://react.dev/) Aplicativo criado com reactJs.
-=======
 - [React Js](https://react.dev/) Aplicativo criado com reactJs.
 - [React Router Dom](https://www.npmjs.com/package/react-router-dom) Rotas
 - [Axios](https://github.com/axios/axios) HTTP Client
 - [Material UI](https://v4.mui.com/) Estilização
->>>>>>> c13fa26fe81c22d91b98726aa452cf5071e9812e

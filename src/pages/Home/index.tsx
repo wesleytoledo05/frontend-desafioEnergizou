@@ -22,7 +22,7 @@ import "./styles.css"
 import api from "../../services/api"
 import { useNavigate } from 'react-router-dom';
 import CustomDialog from '../../components/CustomDialog';
-import { insertMaskInCnpj } from '../../functions/Masks';
+import { insertMaskInCnpj, removeMask } from '../../functions/Masks';
 
 
 interface IClient {
@@ -68,19 +68,19 @@ const Home: React.FC = () => {
             const fetchedItems = response.data;
             setItems(fetchedItems);
             setFilteredItems(fetchedItems);
-            console.log("antes", fetchedItems);
         } catch (error) {
             console.error('Erro ao obter Itens da API', error);
-            console.log("depois", error);
         }
     };
 
     const handleSearchClick = () => {
+        const normalizedCnpj = removeMask(cnpj);
         const filteredItems = clients.filter((client) =>
-            client.cnpj.toString().toLowerCase().includes(cnpj.toLowerCase())
+            client.cnpj.toString().toLowerCase().includes(normalizedCnpj.toLowerCase())
         );
         setFilteredItems(filteredItems);
     };
+
     const handleClickOpen = () => {
         setOpen(true);
     };
