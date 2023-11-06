@@ -49,6 +49,8 @@ $ npm install
 $ npm start
 ```
 
+Agora com o projeto rodando acesse "http://localhost:3000/" no seu computador para acessar e ver a aplicação funcionando (obs: caso a aplicação nao seja aberta automaticamente)
+
 ## Construido com: 
 
 - [React Js](https://react.dev/) Aplicativo criado com reactJs.
