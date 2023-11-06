@@ -60,8 +60,5 @@ Agora com o projeto rodando acesse "http://localhost:3000/" no seu computador pa
 - [React Js](https://react.dev/) Aplicativo criado com reactJs.
 - [React Router Dom](https://www.npmjs.com/package/react-router-dom) Rotas
 - [Axios](https://github.com/axios/axios) HTTP Client
-<<<<<<< HEAD
 - [Material UI](https://v4.mui.com/) Estilização
-=======
 - [Material UI](https://v4.mui.com/) Estilização
->>>>>>> 4cad01ab2ac14a43bb79c26211f3b70d3dd862d9
