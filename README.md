@@ -32,6 +32,9 @@ Além disso, você precisará do servidor em execução localmente em sua máqui
 ```
 $ git clone https://github.com/wesleytoledo05/frontend-desafioEnergizou
 ```
+```
+$ cd frontend-desafioEnergizou
+```
 
 **Instalando dependências**
 
