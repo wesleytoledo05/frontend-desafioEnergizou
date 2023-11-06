@@ -75,6 +75,17 @@ const UpdateCompany: React.FC = () => {
         }
     }
 
+    const checkCep = (e: { target: { value: string; }; }) => {
+        const cep = e.target.value.replace(/\D/g, '')
+        fetch(`https://viacep.com.br/ws/${cep}/json/`)
+            .then(res => res.json()).then(data => {
+                setModel({
+                    ...model,
+                    address: data.logradouro
+                })
+            }).catch(error => console.error(error))
+    }
+
     async function onSubmit(e: ChangeEvent<HTMLFormElement>) {
         e.preventDefault()
 
@@ -141,7 +152,7 @@ const UpdateCompany: React.FC = () => {
                                 type="text"
                                 name='password'
                                 value={model.password}
-                                variant='outlined'                                  
+                                variant='outlined'
                                 color='secondary'
                                 label="Senha"
                                 required
@@ -183,6 +194,7 @@ const UpdateCompany: React.FC = () => {
                                 variant='outlined'
                                 color='secondary'
                                 label="CEP"
+                                onBlur={checkCep}
                                 required
                                 fullWidth
                                 onChange={(e: ChangeEvent<HTMLInputElement>) => updatedModel(e)}
