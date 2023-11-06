@@ -2,6 +2,8 @@
 
 ![Preview-Screens](https://github.com/wesleytoledo05/frontend-desafioEnergizou/blob/main/HomePage.png)
 
+Você pode ver o protótipo do projeto clicando [aqui](https://www.figma.com/proto/KXRyqYWsC8ZzQTZBe6CgZ5/Telas-do-projeto-Energizou?type=design&node-id=12-114&t=kgnuANfAyq4soR8A-1&scaling=scale-down&page-id=0%3A1&starting-point-node-id=12%3A114&mode=design)
+
 A ideia principal da aplicação é: 
 
 _A aplicação visa simplificar a gestão de empresas, proporcionando um ambiente centralizado para o controle de informações de clientes._
